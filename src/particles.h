@@ -1,6 +1,6 @@
 #include <ofVec3f.h>
+#include <cmath>
 #include "ofMain.h"
-#include <math.h>
 #include "definitions.h"//our consts
 
 #pragma once
@@ -40,6 +40,7 @@ public:
 	void setForceZ(int);
 
 	ofSpherePrimitive sphere;//sphere object 
+	
 };
 
 

@@ -25,9 +25,16 @@ class ofApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
 
 		std::vector<Particles> b;//we store our particle object in here
-
+		Particles a;
 		ofEasyCam cam;
 		ofCamera camera;
 		double t = 0;//our in-game time counter
-		//myImages images;
+
+		//coordinates system axises, we want to show the lines of coordinates in running window
+		ofPolyline xAxis;
+		ofPolyline yAxis;
+		ofPolyline zAxis;
+
+		void drawCoordinates();
+		//myImages images;//show image png? doesnt work
 };
