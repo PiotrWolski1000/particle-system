@@ -1,22 +1,25 @@
 #include <ofVec3f.h>
-#include <cmath>
+#include <math.h>
 #include "ofMain.h"
 #include "definitions.h"//our consts
 
 #pragma once
 class Particles{
 
-	int m;
+	float m;
 	ofVec3f r;
 	ofVec3f v;
 	ofVec3f f;
 	int radius;
 	double lifespan;
+	double bornTime;
+	//plan
+	//this t = clock - lifespan
+
 public:
 	Particles();
-	Particles(int masa, ofVec3f r, ofVec3f v, ofVec3f f, int radius);
+	Particles(float masa, ofVec3f r, ofVec3f v, ofVec3f f, int radius);
 	~Particles() {};
-
 
 	//moving our particle
 	void move(double dt, Particles pivotPoint);
@@ -29,6 +32,7 @@ public:
 	ofVec3f getForce();
 
 	void setPos(ofVec3f);
+
 	void setPosX(int);
 	void setPosY(int);
 	void setPosZ(int);
@@ -41,10 +45,12 @@ public:
 	void setForceY(int);
 	void setForceZ(int);
 
-	void setLifespan();
+	void setLifespan(double);
 	double getLifespan();
-	ofSpherePrimitive sphere;//sphere object 
-	
+	double getBornTime();
+	void setBornTime(double);
+
+	ofSpherePrimitive sphere;//our sphere object 
 };
 
 

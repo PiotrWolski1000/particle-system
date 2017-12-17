@@ -1,7 +1,7 @@
 #include "particles.h"
 
 Particles::Particles() {};
-Particles::Particles(int masa = 1, ofVec3f pos = ofVec3f(0, 0, 0), ofVec3f vel = ofVec3f(0, 0, 0), ofVec3f force = ofVec3f(0, 0, 0), int width = 2) {
+Particles::Particles(float masa = 1, ofVec3f pos = ofVec3f(0, 0, 0), ofVec3f vel = ofVec3f(0, 0, 0), ofVec3f force = ofVec3f(0, 0, 0), int width = 5) {
 	this->m = masa;
 	this->r = pos;
 	this->v = vel;
@@ -34,7 +34,7 @@ void Particles::setPos(ofVec3f r2)
 {
 	this->r.x = r2.x;
 	this->r.y = r2.y;
-	this->r.z = r2.z;//commented bc, we do not want to change z axis for now
+	this->r.z = r2.z;
 }
 
 void Particles::setPosX(int value)
@@ -75,19 +75,38 @@ void Particles::setForceZ(int value)
 {
 	this->r.z = value;
 }
-void Particles::setLifespan()
+void Particles::setLifespan(double dt)
 {
-	this->lifespan -= _DT;
+	this->lifespan = dt;
 }
 double Particles::getLifespan()
 {
 	return this->lifespan;
 }
+double Particles::getBornTime()
+{
+	return this->bornTime;
+}
+void Particles::setBornTime(double time)
+{
+	this->bornTime = time;
+}
 void Particles::move(double dt, Particles pivotPoint)
 {
-	this->f.x = int(_GRAVITIONAL * (((this->m * pivotPoint.getMass())) / (this->r.x - pivotPoint.getPos().x)*(this->r.x - pivotPoint.getPos().x)));
-	this->f.y = int(_GRAVITIONAL * (((this->m * pivotPoint.getMass())) / (this->r.y - pivotPoint.getPos().y)*(this->r.y - pivotPoint.getPos().y)));
-	this->f.z = int(_GRAVITIONAL * (((this->m * pivotPoint.getMass())) / (this->r.z - pivotPoint.getPos().z)*(this->r.z - pivotPoint.getPos().z)));
+	//this->f.x = int(_GRAVITIONAL * (((this->m * pivotPoint.getMass())) / (this->r.x - pivotPoint.getPos().x)*(this->r.x - pivotPoint.getPos().x)));
+	////this->f.y = int(_GRAVITIONAL * (((this->m * pivotPoint.getMass())) / (this->r.y - pivotPoint.getPos().y)*(this->r.y - pivotPoint.getPos().y)));
+	//this->f.z = int(_GRAVITIONAL * (((this->m * pivotPoint.getMass())) / (this->r.z - pivotPoint.getPos().z)*(this->r.z - pivotPoint.getPos().z)));
+	////this->f.x = 0;
+	//this->f.y = 0;
+	////this->f.z = 0;
+
+	float masa2 = pivotPoint.getMass();
+	ofVec3f pos2 = pivotPoint.getPos()-this->r;
+
+	this->f.x = this->m * masa2 / pos2.x*pos2.x;
+	//this->f.y = this->m * masa2 / pos2.y*pos2.y;
+	this->f.z = this->m * masa2 / pos2.z*pos2.z;
+	this->f.y = 0;
 
 	if (pivotPoint.getPos().x < this->r.x)
 		this->f.x = -this->f.x;
@@ -101,11 +120,13 @@ void Particles::move(double dt, Particles pivotPoint)
 	this->v.y += this->f.y * dt;
 	this->v.z += this->f.z * dt;
 
-
+	//this->v.y = 0;
+	this->v.y = this->v.y;
 	//position update
 	this->r.x += this->v.x * dt;
-	this->r.y += this->v.y * dt;
+	//this->r.y += this->v.y * dt;
 	this->r.z += this->v.z * dt;
+	this->r.y = this->r.y;
 
 	//PRZEPIS:
 	//1- LICZYMY SILY
