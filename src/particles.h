@@ -11,13 +11,15 @@ class Particles{
 	ofVec3f v;
 	ofVec3f f;
 	int radius;
-
+	double lifespan;
 public:
 	Particles();
 	Particles(int masa, ofVec3f r, ofVec3f v, ofVec3f f, int radius);
+	~Particles() {};
+
 
 	//moving our particle
-	void move(double dt);
+	void move(double dt, Particles pivotPoint);
 	
 	int getRadius();
 	int getMass();
@@ -26,7 +28,7 @@ public:
 	ofVec3f getVel();
 	ofVec3f getForce();
 
-	void tempSetPos(ofVec3f);
+	void setPos(ofVec3f);
 	void setPosX(int);
 	void setPosY(int);
 	void setPosZ(int);
@@ -39,6 +41,8 @@ public:
 	void setForceY(int);
 	void setForceZ(int);
 
+	void setLifespan();
+	double getLifespan();
 	ofSpherePrimitive sphere;//sphere object 
 	
 };

@@ -3,96 +3,79 @@
 
 //double _g = -9.81;
 
-int _N = 10;//n value defines how many particles do we want to have
+int _N = 100;//n value defines how many particles do we want to have
 
 void ofApp::setup(){
-	ofBackground(0, 0, 0, 0);
-	//ofEnableDepthTest();
-	//turn off ortho
-	//camera.disableOrtho();
-	//idk yet
-	//glDisable(GL_CULL_FACE);
-	//ofSetSphereResolution(100);
-	//fps in title bar
-	std::stringstream strm;
-	strm << "fps: " << ofGetFrameRate();
-	ofSetWindowTitle(strm.str());
+	ofSetFrameRate(30);
+	ofBackground(255, 255, 255, 0);
 
 	//init
 	for (int i = 0; i < _N; i++) {
 		
 		int mass = ofRandom(1, 10);
-		int radius = 10;
+		//int mass = 10;
+		int radius = 5;
 		
-		//int mRx = ofRandom(int(1), ofGetWidth() - radius);
-		//int mRy = ofRandom(int(1), ofGetHeight() - radius);
-		
-		int mRx = ofRandom(0, 1000);
-		int mRy = ofRandom(0, 1000);
-		//int mRz = ofRandom(0, 1000);
-		
-		//int mRx = 100;
-		//int mRy = 100;
-		int mRz = 100;
+		int mRx = ofRandom(200, 800);
+		int mRy = ofRandom(200, 800);
+		int mRz = ofRandom(200, 800);	
 
-		//int mRy = 0;
-		//int mRz = 0;
-
-		int mVx = 0;
-		int mVy = 0;
+		int mVx = ofRandom(20, 20);
+		int mVy = ofRandom(20, 20);
 		int mVz = 0;
-			
+	
 		int mFx = 0;
 		int mFy = 0;
 		int mFz = 0;
 
-		//b[i].color.set(128, 128, 3);
-
 		b.push_back(Particles(mass, ofVec3f(mRx, mRy, mRz), ofVec3f(mVx, mVy, mVz), ofVec3f(mFx, mFy, mFz), radius));
 		b[i].sphere.setRadius(b[i].getRadius());
-		
+		b[i].setLifespan();
 		//test-comment below, when must wait for spowning particles bc of writing info in cmd
-		std::cout <<"mass: "<<mass<< ", mrx: " << mRx << ", mRy: " << mRy << ", mRz: " << mRz<<"\n";
+		//std::cout <<"mass: "<<mass<< ", mrx: " << mRx << ", mRy: " << mRy << ", mRz: " << mRz<<"\n";
 
 	}
 	//blue sphere
-	//Particles a(3, ofVec3f(50, 50, 50), ofVec3f(0, 0, 0), ofVec3f(0, 0, 0), 20);
-	//a.sphere.setRadius(a.getRadius());
-
+	a = Particles(3, ofVec3f(500, 500, 500), ofVec3f(0, 0, 0), ofVec3f(0, 0, 0), 20);
+	
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
 	this->t+=_DT;//krok czasowy z kazdym przebiegiem petli jest zwiekszany
-	
+
+	//particles move
 	for (auto& p:b)
 	{
-		p.move(this->t);
+		p.setLifespan();
+		p.move(this->t, a);
 	}
-
-
+	//pivotPoint move
+	a.setPosZ(int(a.getPos().z + 1));
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-	//images.draw(500, 500, 1024, 768);//rysowanie tla
 
-	//blue sphere
-	//ofSetColor(0, 0, 255, 127);//(64, 64, 64, 127)
-	//a.sphere.setPosition(a.getPos().x, a.getPos().y, a.getPos().z);
-	//a.sphere.draw();
-
+	cam.begin();
 	for (int i = 0; i < this->b.size(); i++) {
-		cam.begin();
 		
-		this->drawCoordinates();
+		cam.lookAt(ofVec3f(500, 500, 500), ofVec3f(1, 1, 1)); // funky
 
-		ofSetColor(255, 255, 255, 127);//(64, 64, 64, 127)
+		//blue sphere
+		ofSetColor(0, 0, 0, 255);
+		a.sphere.setPosition(a.getPos().x, a.getPos().y, a.getPos().z);
+		a.sphere.draw();
+		//coordinates axis lines
+		this->drawCoordinates();
+		//particles
+		//ofSetColor(128,128,128,b[i].getLifespan()/10.0 * 255);
+		ofSetColor(128, 128, 128);
 		b[i].sphere.setPosition(b[i].getPos().x, b[i].getPos().y, b[i].getPos().z);
 		b[i].sphere.draw();
-		//ofSetColor(128,128,128);
-		cam.end();
+
 	}
+	cam.end();
 }
 
 //--------------------------------------------------------------
@@ -143,6 +126,10 @@ void ofApp::windowResized(int w, int h){
 //--------------------------------------------------------------
 void ofApp::gotMessage(ofMessage msg){
 
+}
+
+void ofApp::init()
+{
 }
 
 void ofApp::drawCoordinates()

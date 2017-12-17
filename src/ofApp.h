@@ -23,9 +23,10 @@ class ofApp : public ofBaseApp{
 		void windowResized(int w, int h);
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
-
-		std::vector<Particles> b;//we store our particle object in here
-		Particles a;
+		void init();
+		
+		std::vector<Particles> b;//we store our particle objects in here
+		Particles a;//rotate to this particle
 		ofEasyCam cam;
 		ofCamera camera;
 		double t = 0;//our in-game time counter

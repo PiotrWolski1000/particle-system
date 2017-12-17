@@ -1,8 +1,8 @@
 #include "particles.h"
 
 Particles::Particles() {};
-Particles::Particles(int masa = 1, ofVec3f pos = ofVec3f(0,0,0), ofVec3f vel = ofVec3f(0, 0, 0), ofVec3f force = ofVec3f(0, 0, 0), int width = 2) {
-	this->m = masa;	
+Particles::Particles(int masa = 1, ofVec3f pos = ofVec3f(0, 0, 0), ofVec3f vel = ofVec3f(0, 0, 0), ofVec3f force = ofVec3f(0, 0, 0), int width = 2) {
+	this->m = masa;
 	this->r = pos;
 	this->v = vel;
 	this->f = force;
@@ -30,7 +30,7 @@ ofVec3f Particles::getForce()
 	return this->f;
 }
 
-void Particles::tempSetPos(ofVec3f r2)
+void Particles::setPos(ofVec3f r2)
 {
 	this->r.x = r2.x;
 	this->r.y = r2.y;
@@ -75,37 +75,56 @@ void Particles::setForceZ(int value)
 {
 	this->r.z = value;
 }
-
-void Particles::move(double dt)
+void Particles::setLifespan()
 {
-	//this->r.x = this->r.x + this->v.x * dt;
-	//this->r.y = this->r.y + this->v.y * dt;
-	//this->r.z = this->r.z + this->v.z * dt;
-	
+	this->lifespan -= _DT;
+}
+double Particles::getLifespan()
+{
+	return this->lifespan;
+}
+void Particles::move(double dt, Particles pivotPoint)
+{
+	this->f.x = int(_GRAVITIONAL * (((this->m * pivotPoint.getMass())) / (this->r.x - pivotPoint.getPos().x)*(this->r.x - pivotPoint.getPos().x)));
+	this->f.y = int(_GRAVITIONAL * (((this->m * pivotPoint.getMass())) / (this->r.y - pivotPoint.getPos().y)*(this->r.y - pivotPoint.getPos().y)));
+	this->f.z = int(_GRAVITIONAL * (((this->m * pivotPoint.getMass())) / (this->r.z - pivotPoint.getPos().z)*(this->r.z - pivotPoint.getPos().z)));
+
+	if (pivotPoint.getPos().x < this->r.x)
+		this->f.x = -this->f.x;
+	if (pivotPoint.getPos().y < this->r.y)
+		this->f.y = -this->f.y;
+	if (pivotPoint.getPos().z < this->r.z)
+		this->f.z = -this->f.z;
+
+	//velocity update
+	this->v.x += this->f.x * dt;
+	this->v.y += this->f.y * dt;
+	this->v.z += this->f.z * dt;
+
+
+	//position update
+	this->r.x += this->v.x * dt;
+	this->r.y += this->v.y * dt;
+	this->r.z += this->v.z * dt;
+
 	//PRZEPIS:
 	//1- LICZYMY SILY
 	//2- LICZYMY PREDKOSCI
 	//3- ZMIENIAMY POLOZENIE
 	//4- WROC DO PKT 1
 
-	//rotation to point, which coordinates we have below
-	double x = 1000;
-	double y = 1000;
-	double z = 100;
-	double alfa = 30;//kat o jaki obracamy
+	//rotation matrix
+	//this->setPos(
+	//	ofVec3f(((int(this->r.x - x))*cos(PI / 180 * alfa) + (int(this->r.y - y))*sin(PI / 180 * alfa) + x),//x
+	//		abs((int(this->r.x - x))*sin(PI / 180 * alfa) - (int(this->r.y - y))*cos(PI / 180 * alfa - y))// , //y
+	//		, z)//z
+	//);//updates coordinates with given parameter
 
-	//rotation- maybe change x to x_u and y to y_u? look: https://www.matematyka.pl/308613.htm
+	//cout << "rx: " << this->r.x << ", ry: " << this->r.y << ", rz: " << this->r.z << "\n";
+	//cout << "wartosc wektora sily: " << sqrt(int(this->f.x) ^ 2 + int(this->f.y) ^ 2)<<'\n';
+	//cout << "vx: " << this->v.x << ", vy: " << this->v.y << ", vz: " << this->v.z << "\n";
+	//cout << "fx: " << this->f.x << ", fy: " << this->f.y << ", fz: " << this->f.z << "\n";
 
-	ofVec3f r2 = ofVec3f(((int(this->r.x - x))*cos(PI / 180 * alfa) + (int(this->r.y - y))*sin(PI / 180 * alfa) + x),//x
-		abs((int(this->r.x - x))*sin(PI / 180 * alfa) - (int(this->r.y - y))*cos(PI / 180 * alfa - y))// , //y
-		, z);//z
-
-
-	//ofVec3f r3 = ofVec3f(x, y, z);
-
-	this->tempSetPos(r2);//updates coordinates with given parameter
-	
-	cout << "rx: " << this->r.x << ", ry: " << this->r.y<<", rz: "<<this->r.z<<"\n";
 	//char click = getchar();
 
 };
