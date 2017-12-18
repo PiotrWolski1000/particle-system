@@ -1,9 +1,9 @@
 #include "ofApp.h"
 //--------------------------------------------------------------
-int _N = 100;//n value defines how many particles do we want to have
+int _N = 150;//n value defines how many particles do we want to have
 void ofApp::setup(){
 	ofSetFrameRate(60);
-	ofBackground(255, 255, 255, 0);
+	ofBackground(0, 0, 0, 0);
 
 	
 	//first inits
@@ -33,7 +33,6 @@ void ofApp::setup(){
 		b[i].setBornTime(clock());
 		b[i].setLifespan(ofRandom(12.0));
 	}
-	//blue sphere
 }
 
 //--------------------------------------------------------------
@@ -48,23 +47,26 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-	this->drawCoordinates();//coordinates axis lines
 	
-							//erasing vector which forces are too big, equation for orbital speed?- sattelites
+	//erasing vector which forces are too big, equation for orbital speed?- sattelites
+	//http://www.softschools.com/formulas/physics/orbital_velocity_formula/76/
+	//http://www.fizykon.org/rpo/dyn_sila_odsrodkowa.htm
+
 	this->eraseParticleVector();
 
 	cam.begin();
 	cam.lookAt(ofVec3f(500, 500, 500));//switch to blue sphere position
 	for (int i = 0; i < this->b.size(); i++) {
 		
+		this->drawCoordinates();//coordinates axis lines
 		//blue sphere
 		ofSetColor(0, 0, 255, 0);
 		a.sphere.setPosition(a.getPos().x, a.getPos().y, a.getPos().z);
 		a.sphere.draw();
 
 		//particles
-		ofSetColor(128,128,128,b[i].getLifespan()/12.0 * 255);
-		ofSetColor(128, 128, 128);
+		ofSetColor(255, 0, 0,b[i].getLifespan()/12.0 * 255);
+		//ofSetColor(128, 128, 128);
 		b[i].sphere.setRadius(5);
 		b[i].sphere.setPosition(b[i].getPos().x, b[i].getPos().y, b[i].getPos().z);
 		b[i].sphere.draw();
