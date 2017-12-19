@@ -1,6 +1,6 @@
 #include "ofApp.h"
 //--------------------------------------------------------------
-int _N = 150;//n value defines how many particles do we want to have
+int _N = 500;//n value defines how many particles do we want to have
 void ofApp::setup(){
 	ofSetFrameRate(60);
 	ofBackground(0, 0, 0, 0);
@@ -8,7 +8,7 @@ void ofApp::setup(){
 	
 	//first inits
 	a = Particles(100, ofVec3f(500, 500, 500), ofVec3f(0, 0, 0), ofVec3f(0, 0, 0), 20);
-	//a2 = Particles(100, ofVec3f(500, 500, 600), ofVec3f(0, 0, 0), ofVec3f(0, 0, 0), 20);
+	a2 = Particles(100, ofVec3f(500, 500, 600), ofVec3f(0, 0, 0), ofVec3f(0, 0, 0), 20);
 	for (int i = 0; i < _N; i++) {
 		
 		//int mass = ofRandom(1, 10);
@@ -42,6 +42,7 @@ void ofApp::update(){
 	for (auto& p:b)
 	{
 		p.move(this->t, a);
+		//p.move(this->t, a2);
 	}
 }
 
@@ -65,8 +66,8 @@ void ofApp::draw(){
 		a.sphere.draw();
 
 		//particles
-		ofSetColor(255, 0, 0,b[i].getLifespan()/12.0 * 255);
-		//ofSetColor(128, 128, 128);
+		//ofSetColor(255, 0, 0,b[i].getLifespan()/12.0 * 255);
+		ofSetColor(128, 128, 128);
 		b[i].sphere.setRadius(5);
 		b[i].sphere.setPosition(b[i].getPos().x, b[i].getPos().y, b[i].getPos().z);
 		b[i].sphere.draw();
@@ -149,8 +150,8 @@ void ofApp::init()
 		b.push_back(Particles(mass, ofVec3f(mRx, mRy, mRz), ofVec3f(mVx, mVy, mVz), ofVec3f(mFx, mFy, mFz), radius));
 
 		//here we add time to live of each particle, change to random from 
-		b[i].setLifespan(ofRandom(12.0));
 		b[i].setBornTime(clock());
+		b[i].setLifespan(ofRandom(12.0));
 	}
 }
 
@@ -159,10 +160,11 @@ void ofApp::eraseParticleVector()
 	for (int i = 0; i < this->b.size(); i++) {
 		//cout << (clock() - b[i].getBornTime()) / 1000 << "sekund\n";
 		if((clock() - b[i].getBornTime())/1000 > b[i].getLifespan()){
+			//cout << "im deleting one of us\n";
 			this->b.erase((this->b.begin(), this->b.begin() + i));
+			this->init();
 		}
 	}
-	this->init();
 }
 
 void ofApp::drawCoordinates()
